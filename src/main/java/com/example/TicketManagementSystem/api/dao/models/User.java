@@ -3,13 +3,13 @@ package com.example.TicketManagementSystem.api.dao.models;
 import com.example.TicketManagementSystem.api.repository.EnUserType;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "User")
-public class UserEntity {
+public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userId;
 
     @Column(name = "name", nullable = false)
@@ -21,11 +21,33 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    public List<Ticket> getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(List<Ticket> ticket) {
+        this.ticket = ticket;
+    }
+
+    public List<Groups> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Groups> groups) {
+        this.groups = groups;
+    }
+
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
     private EnUserType type;
 
-    public UserEntity() { }
+    @OneToMany(mappedBy = "user")
+    private List<Ticket> ticket;
+
+    @ManyToMany
+    private List<Groups> groups;
+
+    public User() { }
 
     public int getUserId() {
         return userId;

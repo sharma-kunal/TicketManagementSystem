@@ -1,8 +1,11 @@
 package com.example.TicketManagementSystem.api.controller;
 
-import com.example.TicketManagementSystem.api.dao.models.UserEntity;
+import com.example.TicketManagementSystem.api.dao.models.User;
 import com.example.TicketManagementSystem.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,22 +21,22 @@ public class UserController {
     UserRepository userRepository;
 
     @PostMapping("/register")
-    public UserEntity registerUser(@RequestBody UserEntity userEntity) {
-        return userRepository.save(userEntity);
+    public User registerUser(@RequestBody User user) {
+        return userRepository.save(user);
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody UserEntity userEntity) {
-        List<UserEntity> users= userRepository.findAll();
-        for (UserEntity user: users) {
-            if (user.getEmail().equals(userEntity.getEmail())) {
-                if (user.getPassword().equals(userEntity.getPassword())) {
-                    return userEntity.getEmail();
+    public ResponseEntity<User> loginUser(@RequestBody User user) {
+        List<User> users= userRepository.findAll();
+        for (User u: users) {
+            if (u.getEmail().equals(user.getEmail())) {
+                if (u.getPassword().equals(user.getPassword())) {
+                    return new ResponseEntity<User>(u,HttpStatus.OK);
                 } else {
-                    return "Email and Password Does Not Match";
+                    return new ResponseEntity<User>(new User(), HttpStatus.UNAUTHORIZED);
                 }
             }
         }
-        return "User Does Not Exist";
+        return new ResponseEntity<User>(new User(), HttpStatus.NOT_FOUND);
     }
 }
