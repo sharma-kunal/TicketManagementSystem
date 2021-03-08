@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC    
-        "-//Hibernate/Hibernate Configuration DTD 5.3//EN"    
+        "-//Hibernate/Hibernate Configuration DTD 5.3//EN"
         "http://www.hibernate.org/dtd/hibernate-configuration-5.3.dtd">
 <hibernate-configuration>
 	<session-factory>
@@ -11,10 +11,10 @@
 		<property name="connection.password"></property>
 		<property name="dialect">org.hibernate.dialect.H2Dialect</property>
 		<property name="show_sql">true</property>
-		<mapping class="com.example.database.User"></mapping>
-		<mapping class="com.example.database.Ticket"></mapping>
-		<mapping class="com.example.database.Group"></mapping>
-		<mapping class="com.example.database.Category"></mapping>
+		<mapping class="com.example.TicketManagementSystem.database.model.User"></mapping>
+<!--		<mapping class="com.example.database.Ticket"></mapping>-->
+<!--		<mapping class="com.example.database.Group"></mapping>-->
+<!--		<mapping class="com.example.database.Category"></mapping>-->
 
 	</session-factory>
 </hibernate-configuration>
