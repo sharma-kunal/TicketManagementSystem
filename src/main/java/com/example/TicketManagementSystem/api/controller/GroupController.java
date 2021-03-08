@@ -9,6 +9,7 @@ import com.example.TicketManagementSystem.api.repository.UserRepository;
 import com.example.TicketManagementSystem.api.services.CategoryService;
 import com.example.TicketManagementSystem.api.services.GroupService;
 import com.example.TicketManagementSystem.api.services.UserService;
+import com.example.TicketManagementSystem.api.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,11 +34,13 @@ public class GroupController {
     @Autowired
     GroupService groupService;
 
+    @CrossOrigin(origins = Utils.CORS)
     @GetMapping
     public List<Groups> getAllGroups() {
         return groupRepository.findAll();
     }
 
+    @CrossOrigin(origins = Utils.CORS)
     @PostMapping("")
     public ResponseEntity<Groups> createGroup(@RequestHeader("email") String email, @RequestBody Groups group) {
         User user = userService.getUserByEmail(email);
@@ -58,6 +61,7 @@ public class GroupController {
         return new ResponseEntity<>(group, HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = Utils.CORS)
     @GetMapping("/{id}")
     public ResponseEntity<Groups> getGroupByID(@PathVariable Integer id) {
         List<Groups> groups = groupRepository.findAll();
@@ -69,6 +73,7 @@ public class GroupController {
         return new ResponseEntity<>(new Groups(), HttpStatus.NOT_FOUND);
     }
 
+    @CrossOrigin(origins = Utils.CORS)
     @GetMapping("/{id}/member")
     public List<User> getMembers(@PathVariable Integer id) {
         List<Groups> groups = groupRepository.findAll();
@@ -86,6 +91,7 @@ public class GroupController {
         return members;
     }
 
+    @CrossOrigin(origins = Utils.CORS)
     @PutMapping("/{id}/member")
     public ResponseEntity<User> addMember(@PathVariable Integer id, @RequestBody User user) {
         List<User> users = userRepository.findAll();

@@ -5,6 +5,7 @@ import com.example.TicketManagementSystem.api.dao.models.User;
 import com.example.TicketManagementSystem.api.repository.*;
 import com.example.TicketManagementSystem.api.services.TicketService;
 import com.example.TicketManagementSystem.api.services.UserService;
+import com.example.TicketManagementSystem.api.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class TicketController {
     @Autowired
     UserService userService;
 
+    @CrossOrigin(origins = Utils.CORS)
     @GetMapping("")
     public ResponseEntity<List<Ticket>> getTicket(@RequestHeader("email") String email) {
         User user = userService.getUserByEmail(email);
@@ -47,6 +49,7 @@ public class TicketController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = Utils.CORS)
     @PostMapping("")
     public ResponseEntity<Ticket> createTicket(@RequestHeader("email") String email, @RequestBody Ticket ticket) throws ParseException {
         User user = userService.getUserByEmail(email);
@@ -60,6 +63,7 @@ public class TicketController {
         return new ResponseEntity<>(ticket, HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = Utils.CORS)
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketByID(@PathVariable Integer id) {
         Ticket ticket = ticketService.findByID(id);
