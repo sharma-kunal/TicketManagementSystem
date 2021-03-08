@@ -1,8 +1,10 @@
 package com.example.TicketManagementSystem.api.dao.models;
 
 import com.example.TicketManagementSystem.api.repository.EnUserType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,14 +23,6 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    public List<Ticket> getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(List<Ticket> ticket) {
-        this.ticket = ticket;
-    }
-
     public List<Groups> getGroups() {
         return groups;
     }
@@ -41,13 +35,14 @@ public class User {
     @Enumerated(EnumType.STRING)
     private EnUserType type;
 
-    @OneToMany(mappedBy = "user")
-    private List<Ticket> ticket;
-
     @ManyToMany
-    private List<Groups> groups;
+    private List<Groups> groups = new ArrayList<>();
 
     public User() { }
+
+    public User(Integer userId) {
+        this.userId = userId;
+    }
 
     public int getUserId() {
         return userId;

@@ -48,13 +48,12 @@ public class Ticket {
     private List<Attachments> attachments;
 
     // Many tickets belongs to one Category
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Category category;
 
     // Many tickets can be assigned to one user
     @ManyToOne
     private User user;
-
 
     public Ticket(int ticketId, int createdByUserId, EnStatusType status, String title, EnPriorityType priority,
                   Date startDate, Date dueDate, String description, List<Comments> comments, List<Attachments> attachments,

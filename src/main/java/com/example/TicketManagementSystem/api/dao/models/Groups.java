@@ -1,13 +1,11 @@
 package com.example.TicketManagementSystem.api.dao.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Groups {
@@ -15,20 +13,33 @@ public class Groups {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int groupId;
+
+    @Column(nullable = false)
     private String groupName;
     //Many groups belongs to one category
+
     @ManyToOne
     private Category category;
-    //Many groups can have many users
+
     @ManyToMany(mappedBy = "groups")
-    private List<User> user;
+    @JsonBackReference
+    private List<User> user = new ArrayList<>();
+
     public Groups(int groupId, String groupName, Category category, List<User> user) {
-        super();
         this.groupId = groupId;
         this.groupName = groupName;
         this.category = category;
         this.user = user;
     }
+
+    public List<User> getUser() {
+        return user;
+    }
+
+    public void setUser(List<User> user) {
+        this.user = user;
+    }
+
     public Groups() {
         super();
         // TODO Auto-generated constructor stub
@@ -45,19 +56,14 @@ public class Groups {
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
+
     public Category getCategory() {
         return category;
     }
+
     public void setCategory(Category category) {
         this.category = category;
     }
-    public List<User> getUser() {
-        return user;
-    }
-    public void setUser(List<User> user) {
-        this.user = user;
-    }
-
 
 
 }
