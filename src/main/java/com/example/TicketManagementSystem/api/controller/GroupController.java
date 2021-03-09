@@ -8,6 +8,7 @@ import com.example.TicketManagementSystem.api.repository.GroupRepository;
 import com.example.TicketManagementSystem.api.repository.UserRepository;
 import com.example.TicketManagementSystem.api.services.CategoryService;
 import com.example.TicketManagementSystem.api.services.GroupService;
+import com.example.TicketManagementSystem.api.services.RoundRobinService;
 import com.example.TicketManagementSystem.api.services.UserService;
 import com.example.TicketManagementSystem.api.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/group")
+@CrossOrigin(origins = "*")
 public class GroupController {
 
     @Autowired
@@ -34,13 +36,14 @@ public class GroupController {
     @Autowired
     GroupService groupService;
 
-    @CrossOrigin(origins = Utils.CORS)
+    @Autowired
+    RoundRobinService roundRobinService;
+
     @GetMapping
     public List<Groups> getAllGroups() {
         return groupRepository.findAll();
     }
 
-    @CrossOrigin(origins = Utils.CORS)
     @PostMapping("")
     public ResponseEntity<Groups> createGroup(@RequestHeader("email") String email, @RequestBody Groups group) {
         User user = userService.getUserByEmail(email);
@@ -61,7 +64,6 @@ public class GroupController {
         return new ResponseEntity<>(group, HttpStatus.CREATED);
     }
 
-    @CrossOrigin(origins = Utils.CORS)
     @GetMapping("/{id}")
     public ResponseEntity<Groups> getGroupByID(@PathVariable Integer id) {
         List<Groups> groups = groupRepository.findAll();
@@ -73,7 +75,6 @@ public class GroupController {
         return new ResponseEntity<>(new Groups(), HttpStatus.NOT_FOUND);
     }
 
-    @CrossOrigin(origins = Utils.CORS)
     @GetMapping("/{id}/member")
     public List<User> getMembers(@PathVariable Integer id) {
         List<Groups> groups = groupRepository.findAll();
@@ -91,13 +92,14 @@ public class GroupController {
         return members;
     }
 
-    @CrossOrigin(origins = Utils.CORS)
     @PutMapping("/{id}/member")
     public ResponseEntity<User> addMember(@PathVariable Integer id, @RequestBody User user) {
         List<User> users = userRepository.findAll();
         User member = null;
         for(User u: users) {
-            if (u.getUserId() == user.getUserId()) {
+
+            // finding the Member to add in the group and storing in member variable
+            if (u.getUserId() == user.getUserId() && u.getType().equals(EnUserType.MEMBER)) {
                 member = u;
                 break;
             }
@@ -119,6 +121,10 @@ public class GroupController {
         user_group_list.add(group);
         member.setGroups(user_group_list);
         userRepository.save(member);
+
+        // Every Time Any Member is Added to a Group, add it to the RoundRobin Table
+
+        roundRobinService.addMember(member.getGroups().get(0).getCategory(), member);
         return new ResponseEntity<>(member, HttpStatus.OK);
     }
 }

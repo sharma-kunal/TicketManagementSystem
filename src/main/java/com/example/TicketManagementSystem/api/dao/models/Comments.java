@@ -1,10 +1,8 @@
 package com.example.TicketManagementSystem.api.dao.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import javax.persistence.*;
 
 @Entity
 public class Comments {
@@ -13,16 +11,18 @@ public class Comments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int commentId;
-    private int userId;
-    private String comment;
 
+    @OneToOne
+    private User userId;
+    private String comment;
 
     //Many comments belongs to one ticket
     @ManyToOne
+    @JsonBackReference
     private Ticket ticket;
 
 
-    public Comments(int commentId, int userId, String comment, Ticket ticket) {
+    public Comments(int commentId, User userId, String comment, Ticket ticket) {
         super();
         this.commentId = commentId;
         this.userId = userId;
@@ -47,12 +47,12 @@ public class Comments {
     }
 
 
-    public int getUserId() {
+    public User getUserId() {
         return userId;
     }
 
 
-    public void setUserId(int userId) {
+    public void setUserId(User userId) {
         this.userId = userId;
     }
 

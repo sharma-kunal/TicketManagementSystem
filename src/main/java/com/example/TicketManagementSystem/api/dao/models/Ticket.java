@@ -2,6 +2,7 @@ package com.example.TicketManagementSystem.api.dao.models;
 
 import com.example.TicketManagementSystem.api.repository.EnPriorityType;
 import com.example.TicketManagementSystem.api.repository.EnStatusType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -22,8 +23,8 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private EnPriorityType priority;
 
-    @Column(nullable = false)
-    private int createdByUserId;
+    @OneToOne
+    private User createdByUserId;
 
     @Column(nullable = false)
     private String title;
@@ -55,7 +56,7 @@ public class Ticket {
     @ManyToOne
     private User user;
 
-    public Ticket(int ticketId, int createdByUserId, EnStatusType status, String title, EnPriorityType priority,
+    public Ticket(int ticketId, User createdByUserId, EnStatusType status, String title, EnPriorityType priority,
                   Date startDate, Date dueDate, String description, List<Comments> comments, List<Attachments> attachments,
                   Category category, User user) {
         super();
@@ -86,11 +87,11 @@ public class Ticket {
         this.ticketId = ticketId;
     }
 
-    public int getCreatedByUserId() {
+    public User getCreatedByUserId() {
         return createdByUserId;
     }
 
-    public void setCreatedByUserId(int createdByUserId) {
+    public void setCreatedByUserId(User createdByUserId) {
         this.createdByUserId = createdByUserId;
     }
 

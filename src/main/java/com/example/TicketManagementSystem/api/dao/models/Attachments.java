@@ -1,11 +1,9 @@
 package com.example.TicketManagementSystem.api.dao.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 
 @Entity
 public class Attachments {
@@ -13,19 +11,26 @@ public class Attachments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int attachmentId;
-    private int userId;
 
+    @OneToOne
+    private User userId;
+
+    private String attachmentName;
+    private String attachmentType;
+
+    @JsonIgnore
     @Lob
     private byte[] attachment;
 
     // Many attachment belongs to one ticket
     @ManyToOne
+    @JsonBackReference
     private Ticket ticket;
 
-    public Attachments(int attachmentId, int userId, byte[] attachment, Ticket ticket) {
-        super();
-        this.attachmentId = attachmentId;
+    public Attachments(User userId, String attachmentName, String attachmentType, byte[] attachment, Ticket ticket) {
         this.userId = userId;
+        this.attachmentName = attachmentName;
+        this.attachmentType = attachmentType;
         this.attachment = attachment;
         this.ticket = ticket;
     }
@@ -43,11 +48,11 @@ public class Attachments {
         this.attachmentId = attachmentId;
     }
 
-    public int getUserId() {
+    public User getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(User userId) {
         this.userId = userId;
     }
 
@@ -67,8 +72,20 @@ public class Attachments {
         this.ticket = ticket;
     }
 
+    public String getAttachmentName() {
+        return attachmentName;
+    }
 
+    public void setAttachmentName(String attachmentName) {
+        this.attachmentName = attachmentName;
+    }
 
+    public String getAttachmentType() {
+        return attachmentType;
+    }
 
+    public void setAttachmentType(String attachmentType) {
+        this.attachmentType = attachmentType;
+    }
 }
 

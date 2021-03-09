@@ -2,6 +2,7 @@ package com.example.TicketManagementSystem.api.dao.models;
 
 import com.example.TicketManagementSystem.api.repository.EnUserType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;

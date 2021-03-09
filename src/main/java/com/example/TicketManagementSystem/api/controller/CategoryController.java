@@ -16,18 +16,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/category")
+@CrossOrigin(origins = "*")
 public class CategoryController {
 
     @Autowired
     CategoryRepository categoryRepository;
 
-    @CrossOrigin(origins = Utils.CORS)
     @GetMapping("")
     public List<Category> getCategory() {
         return categoryRepository.findAll();
     }
 
-    @CrossOrigin(origins = Utils.CORS)
     @PostMapping("")
     public Category createCategory(@RequestBody Category category) {
         categoryRepository.save(category);

@@ -15,18 +15,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     @Autowired
     UserRepository userRepository;
 
-    @CrossOrigin(origins = Utils.CORS)
     @PostMapping("/register")
     public User registerUser(@RequestBody User user) {
         return userRepository.save(user);
     }
 
-    @CrossOrigin(origins = Utils.CORS)
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody User user) {
         List<User> users= userRepository.findAll();
@@ -42,13 +41,11 @@ public class UserController {
         return new ResponseEntity<>(new User(), HttpStatus.NOT_FOUND);
     }
 
-    @CrossOrigin(origins = Utils.CORS)
     @GetMapping()
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
-    @CrossOrigin(origins = Utils.CORS)
     @GetMapping("/member")
     public List<User> getAllMembers() {
         List<User> users = userRepository.findAll();

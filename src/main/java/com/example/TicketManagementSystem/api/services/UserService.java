@@ -17,15 +17,22 @@ public class UserService {
     UserRepository userRepository;
 
     public User getUserByEmail(String email) {
-        System.out.println("User By Email Function Called");
         List<User> users = userRepository.findAll();
         for(User user: users) {
-            System.out.println(user.getEmail());
             if (user.getEmail().equals(email)) {
                 return user;
             }
         }
-        System.out.println("Function ended");
+        return null;
+    }
+
+    public User getUserByID(int id) {
+        List<User> users = userRepository.findAll();
+        for(User user: users) {
+            if (user.getUserId() == id) {
+                return user;
+            }
+        }
         return null;
     }
 

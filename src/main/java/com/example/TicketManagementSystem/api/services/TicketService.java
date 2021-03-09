@@ -21,11 +21,14 @@ public class TicketService {
     @Autowired
     GroupRepository groupRepository;
 
+    @Autowired
+    RoundRobinService roundRobinService;
+
     public List<Ticket> getTicketCreatedByUser(User user) {
         List<Ticket> tickets = ticketRepository.findAll();
         List<Ticket> result = new ArrayList<>();
         for(Ticket ticket: tickets) {
-            if (ticket.getCreatedByUserId() == user.getUserId()) {
+            if (ticket.getCreatedByUserId().getUserId() == user.getUserId()) {
                 result.add(ticket);
             }
         }
@@ -33,15 +36,21 @@ public class TicketService {
     }
 
     public List<Ticket> getTicketWithSameCategory(User user) {
-        // only call when sure that user is member
-        List<Ticket> tickets = ticketRepository.findAll();
+        List<Groups> groups = user.getGroups();
         List<Ticket> result = new ArrayList<>();
-        for(Ticket ticket: tickets) {
-            // get the category of this user
-            // then return all tickets under that category
-            // User Service -> getCategoryOfMember()
+        try {
+            int category_id = groups.get(0).getCategory().getCategoryId();
+            List<Ticket> tickets = ticketRepository.findAll();
+            for(Ticket ticket: tickets) {
+                if (ticket.getCategory().getCategoryId() == category_id) {
+                    result.add(ticket);
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
-        return result;
     }
 
     public Ticket findByID(Integer id) {
@@ -67,28 +76,31 @@ public class TicketService {
         ticket.setStatus(EnStatusType.OPEN);
         ticket.setPriority(EnPriorityType.MEDIUM);
 
-        ticket.setCreatedByUserId(user.getUserId());
+        ticket.setCreatedByUserId(user);
 
         Category category = ticket.getCategory();
 
         // assign to a user in this category -> currently random allocation
 
-        List<Groups> groups = groupRepository.findAll();
-        List<User> members = new ArrayList<>();
-        for(Groups group: groups) {
-            List<User> users = group.getUser();
-            for(User u: users) {
-                if (u.getType().equals(EnUserType.MEMBER)) {
-                    members.add(u);
-                }
-            }
-        }
-        int max = members.size();
-        int min = 0;
-        Random random = new Random();
-        int index = random.nextInt(max-min)+min;
+//        List<Groups> groups = groupRepository.findAll();
+//        List<User> members = new ArrayList<>();
+//        for(Groups group: groups) {
+//            List<User> users = group.getUser();
+//            for(User u: users) {
+//                if (u.getType().equals(EnUserType.MEMBER)) {
+//                    members.add(u);
+//                }
+//            }
+//        }
 
-        ticket.setUser(members.get(index));
+        User member = roundRobinService.assignTicket(category.getCategoryId());
+
+//        int max = members.size();
+//        int min = 0;
+//        Random random = new Random();
+//        int index = random.nextInt(max-min)+min;
+//
+        ticket.setUser(member);
         return ticket;
     }
 }
