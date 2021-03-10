@@ -28,8 +28,8 @@ public class CategoryController {
     }
 
     @PostMapping("")
-    public Category createCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
         categoryRepository.save(category);
-        return category;
+        return new ResponseEntity<>(category, HttpStatus.OK);
     }
 }

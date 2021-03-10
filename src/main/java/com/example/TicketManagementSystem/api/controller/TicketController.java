@@ -2,10 +2,7 @@ package com.example.TicketManagementSystem.api.controller;
 
 import com.example.TicketManagementSystem.api.dao.models.*;
 import com.example.TicketManagementSystem.api.repository.*;
-import com.example.TicketManagementSystem.api.services.AttachmentService;
-import com.example.TicketManagementSystem.api.services.CommentService;
-import com.example.TicketManagementSystem.api.services.TicketService;
-import com.example.TicketManagementSystem.api.services.UserService;
+import com.example.TicketManagementSystem.api.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -19,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/ticket")
@@ -40,6 +36,9 @@ public class TicketController {
 
     @Autowired
     AttachmentService attachmentService;
+
+    @Autowired
+    NotificationService notificationService;
 
     @GetMapping("")
     public ResponseEntity<List<Ticket>> getTicket(@RequestHeader("email") String email) {
@@ -71,6 +70,10 @@ public class TicketController {
         Ticket created_ticket = ticketService.createTicket(user, ticket);
 
         ticketRepository.save(created_ticket);
+
+        // notify members in this category
+        notificationService.notifyMember(ticket);
+
         return new ResponseEntity<>(ticket, HttpStatus.CREATED);
     }
 
@@ -78,6 +81,7 @@ public class TicketController {
     public ResponseEntity<Ticket> getTicketByID(@PathVariable Integer id) {
         Ticket ticket = ticketService.findByID(id);
         if (ticket == null) {
+
             return new ResponseEntity<>(new Ticket(), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Ticket>(ticket, HttpStatus.OK);
@@ -100,6 +104,28 @@ public class TicketController {
             ticketRepository.save(ticket);
             return new ResponseEntity<>(comment.getComment(), HttpStatus.CREATED);
         }
+    }
+
+    @GetMapping("{id}/askForDetail")
+    public ResponseEntity<String> askForDetails(@PathVariable Integer id) {
+        Ticket ticket = ticketService.findByID(id);
+        if (ticket != null) {
+            notificationService.askForDetails(ticket);
+            return new ResponseEntity<>("Asked for Details Successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Ticket Not Found", HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("{id}/close")
+    public ResponseEntity<String> closeTicket(@PathVariable Integer id) {
+        Ticket ticket = ticketService.findByID(id);
+        if (ticket != null) {
+            ticket.setStatus(EnStatusType.CLOSE);
+            // notify user
+            notificationService.ticketClosed(ticket);
+            return new ResponseEntity<>("Ticket Closed", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("No Ticket Found", HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/{id}/uploadAttachment")
