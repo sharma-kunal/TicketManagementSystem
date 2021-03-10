@@ -17,6 +17,11 @@
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
+	<properties>
+		<sonar.projectKey>sharma-kunal_TicketManagementSystem</sonar.projectKey>
+		<sonar.organization>ticketmanagementsystem</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+	</properties>
 	<dependencies>
 
 		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
