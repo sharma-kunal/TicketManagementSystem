@@ -74,7 +74,7 @@ public class RoundRobinService {
         }
         List<RoundRobin> roundRobins1 = roundRobinRepository.findAll();
         for(RoundRobin roundRobin: roundRobins1) {
-            if (roundRobin.getCategory_id() == category_id) {
+            if (roundRobin.getMember_id() == user_id) {
                 userExists = true;
                 break;
             }
