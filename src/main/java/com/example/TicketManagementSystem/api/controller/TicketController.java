@@ -3,7 +3,9 @@ package com.example.TicketManagementSystem.api.controller;
 import com.example.TicketManagementSystem.api.dao.models.*;
 import com.example.TicketManagementSystem.api.repository.*;
 import com.example.TicketManagementSystem.api.services.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -77,6 +79,18 @@ public class TicketController {
         return new ResponseEntity<>(ticket, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Ticket> updateTicket(@PathVariable Integer id, @RequestBody Ticket ticket) {
+        Ticket ticket_data = ticketService.findByID(id);
+        if (ticket != null) {
+            String description = ticket_data.getDescription() + " " + ticket.getDescription();
+            ticket_data.setDescription(description);
+            ticketRepository.save(ticket_data);
+            return new ResponseEntity<>(ticket_data, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(new Ticket(), HttpStatus.NOT_FOUND);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketByID(@PathVariable Integer id) {
         Ticket ticket = ticketService.findByID(id);
@@ -121,6 +135,7 @@ public class TicketController {
         Ticket ticket = ticketService.findByID(id);
         if (ticket != null) {
             ticket.setStatus(EnStatusType.CLOSE);
+            ticketRepository.save(ticket);
             // notify user
             notificationService.ticketClosed(ticket);
             return new ResponseEntity<>("Ticket Closed", HttpStatus.OK);
