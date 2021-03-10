@@ -15,9 +15,8 @@
 	<name>TicketManagementSystem</name>
 	<description>Ticket Management System using Spring Boot</description>
 	<properties>
-		<java.version>1.8</java.version>
 		<sonar.projectKey>sharma-kunal_TicketManagementSystem</sonar.projectKey>
-		<sonar.organization>ticketmanagementsystem</sonar.organization>
+		<sonar.organization>sharma-kunal</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
